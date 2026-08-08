@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-display {
+    font-family: 'Bebas Neue', 'Oswald', sans-serif;
+    letter-spacing: 0.04em;
+  }
+  .font-mono-custom {
+    font-family: 'Space Mono', monospace;
+  }
+  .font-devanagari {
+    font-family: 'Yatra One', 'Tiro Devanagari Hindi', serif;
+  }
+  .font-body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* Retro Goa Signboard Button & Card Styling */
+  .btn-goa-yellow {
+    background-color: #FFD600;
+    color: #111111;
+    border: 3px solid #111111;
+    box-shadow: 4px 4px 0px #111111;
+    transition: all 0.15s ease-in-out;
+  }
+  .btn-goa-yellow:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #111111;
+    background-color: #FFE033;
+  }
+  .btn-goa-yellow:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #111111;
+  }
+
+  .btn-goa-pink {
+    background-color: #FF007A;
+    color: #FFFFFF;
+    border: 3px solid #111111;
+    box-shadow: 4px 4px 0px #111111;
+    transition: all 0.15s ease-in-out;
+  }
+  .btn-goa-pink:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #111111;
+    background-color: #FF2690;
+  }
+  .btn-goa-pink:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #111111;
+  }
+
+  .btn-goa-cream {
+    background-color: #FFF9E8;
+    color: #111111;
+    border: 3px solid #111111;
+    box-shadow: 4px 4px 0px #111111;
+    transition: all 0.15s ease-in-out;
+  }
+  .btn-goa-cream:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #111111;
+    background-color: #FFFFFF;
+  }
+  .btn-goa-cream:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #111111;
+  }
+
+  .goa-card {
+    border: 3px solid #111111;
+    box-shadow: 6px 6px 0px #111111;
+  }
+
+  .goa-badge {
+    border: 2px solid #111111;
+    box-shadow: 2px 2px 0px #111111;
+  }
+}
+
+/* Custom noise/texture subtle overlay */
+.goa-pattern-bg {
+  background-color: #006B3C;
+  background-image: radial-gradient(#00502D 1.5px, transparent 1.5px), radial-gradient(#00502D 1.5px, #006B3C 1.5px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+/* Keyframe Animations */
+@keyframes sway-frond {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes wave-slide {
+  0%, 100% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+}
+
+@keyframes sun-glow-pulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,214,0,0.4)); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 10px rgba(255,214,0,0.8)); }
+}
+
+@keyframes title-entrance {
+  0% { opacity: 0; transform: translateY(16px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes card-pop-in {
+  0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Utility animation classes */
+.animate-sway {
+  animation: sway-frond 4s ease-in-out infinite;
+  transform-origin: top left;
+}
+
+.animate-sway-reverse {
+  animation: sway-frond 5s ease-in-out infinite reverse;
+  transform-origin: top right;
+}
+
+.animate-wave-slide {
+  animation: wave-slide 3.5s ease-in-out infinite;
+}
+
+.animate-sun-pulse {
+  animation: sun-glow-pulse 4s ease-in-out infinite;
+}
+
+.animate-title-entrance {
+  animation: title-entrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-arrow-nudge {
+  animation: arrow-nudge 1.5s ease-in-out infinite;
+}
+
+.animate-float-gentle {
+  animation: float-gentle 3s ease-in-out infinite;
+}
+
+.animate-card-pop-in {
+  animation: card-pop-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-sway,
+  .animate-sway-reverse,
+  .animate-wave-slide,
+  .animate-sun-pulse,
+  .animate-title-entrance,
+  .animate-arrow-nudge,
+  .animate-float-gentle,
+  .animate-card-pop-in,
+  .animate-spin-slow {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+

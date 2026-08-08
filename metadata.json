@@ -1,0 +1,6 @@
+{
+  "name": "Hacker House Goa — Frame Lab",
+  "description": "Official Photo Frame & Builder ID Card Generator for Hacker House Goa 2026. Custom tropical frames, builder titles, high-res PNG download, and direct X share.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
