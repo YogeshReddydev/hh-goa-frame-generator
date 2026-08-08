@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Upload, Camera, Image as ImageIcon, AlertCircle, RefreshCw } from 'lucide-react';
 import { PalmTreeIcon, TropicalSun, WaveIcon } from './DecorativeElements';
 import heic2any from 'heic2any';
+import { normalizeImageOrientation } from '../utils/exifUtils';
 
 interface PhotoUploaderProps {
   onImageSelected: (file: File, dataUrl: string) => void;
@@ -55,12 +56,18 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
         return;
       }
 
-      // Read as Data URL
+      // Read as Data URL & handle EXIF orientation for smartphone photos
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         const result = e.target?.result as string;
         if (result) {
-          onImageSelected(finalFile, result);
+          try {
+            const normalized = await normalizeImageOrientation(finalFile, result);
+            onImageSelected(normalized.file, normalized.dataUrl);
+          } catch (err) {
+            console.warn('Orientation fix notice:', err);
+            onImageSelected(finalFile, result);
+          }
         } else {
           setErrorMsg('Failed to process image file. Please try another photo.');
         }
@@ -75,6 +82,27 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       console.error('File process error:', err);
       setErrorMsg("Hmm. Goa couldn't read that photo. Try a JPG, PNG or HEIC.");
       setIsLoading(false);
+    }
+  };
+
+  const handleRequestCameraPermission = async () => {
+    setErrorMsg(null);
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream.getTracks().forEach((track) => track.stop());
+        cameraInputRef.current?.click();
+      } catch (err: unknown) {
+        console.warn('Camera permission check error:', err);
+        const error = err as { name?: string };
+        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+          setErrorMsg('Camera access was blocked. Please enable camera permissions in your browser site settings or select a photo from your file library.');
+        } else {
+          cameraInputRef.current?.click();
+        }
+      }
+    } else {
+      cameraInputRef.current?.click();
     }
   };
 
@@ -196,8 +224,9 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
               </button>
 
               <button
-                onClick={() => cameraInputRef.current?.click()}
+                onClick={handleRequestCameraPermission}
                 className="btn-goa-pink w-full sm:w-auto font-display text-lg px-6 py-3 flex items-center justify-center gap-2 cursor-pointer"
+                title="Prompts for camera access before launching camera"
               >
                 <Camera className="w-5 h-5" />
                 <span>TAKE A PHOTO</span>
