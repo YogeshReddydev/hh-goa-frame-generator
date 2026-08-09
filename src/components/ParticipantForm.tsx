@@ -1,7 +1,7 @@
 import React from 'react';
-import { BuilderData } from '../types';
+import { BuilderData, ThemeStyle } from '../types';
 import { ROLES_AND_STACKS, generateTitleForRole, getRandomBuilderTitle, SAMPLE_INDIAN_PARTICIPANTS } from '../data/builderTitles';
-import { RefreshCw, Sparkles, UserCheck } from 'lucide-react';
+import { RefreshCw, Sparkles, Palette, Check } from 'lucide-react';
 
 interface ParticipantFormProps {
   builderData: BuilderData;
@@ -10,6 +10,33 @@ interface ParticipantFormProps {
   onContinue: () => void;
   onLoadDemoSample?: () => void;
 }
+
+const THEME_OPTIONS: { id: ThemeStyle; label: string; tag: string; swatches: string[] }[] = [
+  {
+    id: 'CLASSIC_GOA',
+    label: 'Sunset Goa',
+    tag: 'Tropical Emerald',
+    swatches: ['#006B3C', '#FFD600', '#FF007A'],
+  },
+  {
+    id: 'SUNSET_PINK',
+    label: 'Sunset Pink',
+    tag: 'Vibrant Beach',
+    swatches: ['#C70039', '#FF007A', '#FFD600'],
+  },
+  {
+    id: 'DEEP_SEA',
+    label: 'Deep Sea',
+    tag: 'Ocean Cyan',
+    swatches: ['#0B2545', '#00E5FF', '#FFD600'],
+  },
+  {
+    id: 'CYBER_GOA',
+    label: 'Cyber Goa',
+    tag: 'Neon Dark',
+    swatches: ['#121214', '#00FF66', '#FF007A'],
+  },
+];
 
 export const ParticipantForm: React.FC<ParticipantFormProps> = ({
   builderData,
@@ -169,6 +196,60 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
           </div>
           <div className="bg-black text-[#FFD600] font-bebas text-2xl tracking-wider px-3 py-1.5 rounded border border-black text-center shadow-inner">
             {builderData.builderTitle || 'THE SYSTEM BUILDER'}
+          </div>
+        </div>
+
+        {/* FRAME THEME TOGGLE */}
+        <div className="pt-1">
+          <label className="block font-mono-custom text-xs font-bold text-[#111111] mb-2 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Palette className="w-4 h-4 text-[#FF007A]" /> FRAME THEME STYLE <span className="text-[#FF007A]">*</span>
+            </span>
+            <span className="text-[10px] font-mono-custom text-[#111111] bg-[#FFD600] px-2 py-0.5 border border-black rounded font-bold">
+              PREVIEW THEME
+            </span>
+          </label>
+          <div className="grid grid-cols-2 gap-2.5">
+            {THEME_OPTIONS.map((theme) => {
+              const isSelected = (builderData.themeStyle || 'CLASSIC_GOA') === theme.id;
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  onClick={() => onDataChange({ ...builderData, themeStyle: theme.id })}
+                  className={`p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    isSelected
+                      ? 'bg-[#111111] text-white border-black shadow-[3px_3px_0px_#FFD600] scale-[1.02]'
+                      : 'bg-white hover:bg-yellow-50/50 text-[#111111] border-black/40 hover:border-black shadow-[2px_2px_0px_#111111]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bebas text-lg tracking-wider leading-none">
+                      {theme.label}
+                    </span>
+                    {isSelected && (
+                      <span className="text-[10px] font-mono-custom font-bold bg-[#FF007A] text-white px-1.5 py-0.5 rounded border border-black flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> ACTIVE
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="font-mono-custom text-[10px] opacity-80">
+                      {theme.tag}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {theme.swatches.map((color, idx) => (
+                        <span
+                          key={idx}
+                          className="w-3.5 h-3.5 rounded-full border border-black shadow-xs inline-block"
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 

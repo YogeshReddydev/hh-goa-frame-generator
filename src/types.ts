@@ -16,13 +16,15 @@ export interface ImageAdjustment {
   rotation: number; // degrees
 }
 
+export type ThemeStyle = 'CLASSIC_GOA' | 'SUNSET_PINK' | 'DEEP_SEA' | 'CYBER_GOA';
+
 export interface BuilderData {
   name: string;
   role: string;
   city: string;
   builderTitle: string;
   buildingText: string;
-  themeStyle: 'CLASSIC_GOA' | 'SUNSET_PINK' | 'NEON_YELLOW' | 'MONO_HACKER';
+  themeStyle: ThemeStyle;
 }
 
 export interface PresetSample {

@@ -8,6 +8,67 @@ export interface RenderCanvasOptions {
   adjustment?: ImageAdjustment;
 }
 
+/**
+ * Get theme color palettes dynamically based on themeStyle
+ */
+export function getThemeColors(themeStyle?: string) {
+  switch (themeStyle) {
+    case 'SUNSET_PINK':
+      return {
+        bgOuter: '#C70039',
+        dotPattern: '#A0002C',
+        borderAccent: '#FFD600',
+        cardBg: '#FFF0F5',
+        cardText: '#111111',
+        primaryAccent: '#FF007A',
+        secondaryAccent: '#FFD600',
+        brandPillBg: '#FFD600',
+        brandPillText: '#111111',
+        tagColor: '#C70039',
+      };
+    case 'DEEP_SEA':
+      return {
+        bgOuter: '#0B2545',
+        dotPattern: '#134074',
+        borderAccent: '#00E5FF',
+        cardBg: '#F0F8FF',
+        cardText: '#0B2545',
+        primaryAccent: '#00E5FF',
+        secondaryAccent: '#FFD600',
+        brandPillBg: '#00E5FF',
+        brandPillText: '#0B2545',
+        tagColor: '#134074',
+      };
+    case 'CYBER_GOA':
+      return {
+        bgOuter: '#121214',
+        dotPattern: '#27272A',
+        borderAccent: '#00FF66',
+        cardBg: '#1E1E24',
+        cardText: '#FFFFFF',
+        primaryAccent: '#FF007A',
+        secondaryAccent: '#00FF66',
+        brandPillBg: '#00FF66',
+        brandPillText: '#121214',
+        tagColor: '#00FF66',
+      };
+    case 'CLASSIC_GOA':
+    default:
+      return {
+        bgOuter: '#006B3C',
+        dotPattern: '#00502D',
+        borderAccent: '#FFD600',
+        cardBg: '#FFF9E8',
+        cardText: '#111111',
+        primaryAccent: '#FF007A',
+        secondaryAccent: '#FFD600',
+        brandPillBg: '#FFD600',
+        brandPillText: '#111111',
+        tagColor: '#006B3C',
+      };
+  }
+}
+
 // Helper to wait for font loading before drawing canvas text
 async function ensureFontsLoaded() {
   if ('fonts' in document) {
@@ -65,14 +126,15 @@ function drawPfpFrame(
   h: number,
   options: RenderCanvasOptions
 ) {
-  const { croppedImageElement, imageElement, adjustment } = options;
+  const { croppedImageElement, imageElement, adjustment, builderData } = options;
+  const colors = getThemeColors(builderData?.themeStyle);
 
-  // 1. Background Fill: Deep Tropical Green (#006B3C)
-  ctx.fillStyle = '#006B3C';
+  // 1. Background Fill from active Theme
+  ctx.fillStyle = colors.bgOuter;
   ctx.fillRect(0, 0, w, h);
 
   // Background polka dots pattern
-  ctx.fillStyle = '#00502D';
+  ctx.fillStyle = colors.dotPattern;
   for (let x = 20; x < w; x += 40) {
     for (let y = 20; y < h; y += 40) {
       ctx.beginPath();
@@ -94,8 +156,8 @@ function drawPfpFrame(
   drawRoundedRect(ctx, photoX, photoY, photoW, photoH, cornerRadius);
   ctx.clip();
 
-  // Draw photo background fill (Warm cream if no photo or transparent)
-  ctx.fillStyle = '#FFF9E8';
+  // Draw photo background fill
+  ctx.fillStyle = colors.cardBg;
   ctx.fillRect(photoX, photoY, photoW, photoH);
 
   // Render Cropped Image if available
@@ -131,7 +193,7 @@ function drawPfpFrame(
     ctx.restore();
   } else {
     // Placeholder text if image missing
-    ctx.fillStyle = '#111111';
+    ctx.fillStyle = colors.cardText;
     ctx.font = '700 36px "Space Mono", monospace';
     ctx.textAlign = 'center';
     ctx.fillText('YOUR PHOTO HERE', photoX + photoW / 2, photoY + photoH / 2);
@@ -147,8 +209,8 @@ function drawPfpFrame(
   drawRoundedRect(ctx, photoX, photoY, photoW, photoH, cornerRadius);
   ctx.stroke();
 
-  // Outer Canvas Yellow Border Margin Accent
-  ctx.strokeStyle = '#FFD600';
+  // Outer Canvas Theme Border Margin Accent
+  ctx.strokeStyle = colors.borderAccent;
   ctx.lineWidth = 12;
   ctx.strokeRect(12, 12, w - 24, h - 24);
 
@@ -162,12 +224,12 @@ function drawPfpFrame(
   const topBannerX = (w - topBannerW) / 2;
   const topBannerY = 28;
 
-  // Banner Box (Yellow + Offset Dark Shadow)
+  // Banner Box (Theme Pill + Offset Dark Shadow)
   ctx.fillStyle = '#111111';
   drawRoundedRect(ctx, topBannerX + 6, topBannerY + 6, topBannerW, topBannerH, 12);
   ctx.fill();
 
-  ctx.fillStyle = '#FFD600';
+  ctx.fillStyle = colors.brandPillBg;
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 4;
   drawRoundedRect(ctx, topBannerX, topBannerY, topBannerW, topBannerH, 12);
@@ -175,19 +237,19 @@ function drawPfpFrame(
   ctx.stroke();
 
   // Top Banner Text
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.brandPillText;
   ctx.font = '800 46px "Bebas Neue", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('HACKER HOUSE GOA', w / 2, topBannerY + topBannerH / 2 + 3);
 
   // TOP CORNER BADGES
-  // Top Left: 2026 Pink Badge
+  // Top Left: 2026 Accent Badge
   ctx.fillStyle = '#111111';
   drawRoundedRect(ctx, 42, 38, 110, 48, 8);
   ctx.fill();
 
-  ctx.fillStyle = '#FF007A';
+  ctx.fillStyle = colors.primaryAccent;
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 3;
   drawRoundedRect(ctx, 38, 34, 110, 48, 8);
@@ -264,13 +326,14 @@ function drawBuilderIdCard(
   options: RenderCanvasOptions
 ) {
   const { croppedImageElement, imageElement, adjustment, builderData } = options;
+  const colors = getThemeColors(builderData?.themeStyle);
 
-  // 1. Outer Background: Deep Green (#006B3C) with border pattern
-  ctx.fillStyle = '#006B3C';
+  // 1. Outer Background Fill
+  ctx.fillStyle = colors.bgOuter;
   ctx.fillRect(0, 0, w, h);
 
   // Dot matrix background pattern
-  ctx.fillStyle = '#00502D';
+  ctx.fillStyle = colors.dotPattern;
   for (let x = 25; x < w; x += 50) {
     for (let y = 25; y < h; y += 50) {
       ctx.beginPath();
@@ -279,8 +342,8 @@ function drawBuilderIdCard(
     }
   }
 
-  // Outer Yellow Border Frame
-  ctx.strokeStyle = '#FFD600';
+  // Outer Border Frame
+  ctx.strokeStyle = colors.borderAccent;
   ctx.lineWidth = 14;
   ctx.strokeRect(16, 16, w - 32, h - 32);
 
@@ -288,7 +351,7 @@ function drawBuilderIdCard(
   ctx.lineWidth = 6;
   ctx.strokeRect(23, 23, w - 46, h - 46);
 
-  // 2. MAIN POSTER CARD CONTAINER (Cream background with black offset shadow)
+  // 2. MAIN POSTER CARD CONTAINER
   const cardMargin = 45;
   const cardX = cardMargin;
   const cardY = cardMargin + 10;
@@ -300,8 +363,8 @@ function drawBuilderIdCard(
   drawRoundedRect(ctx, cardX + 12, cardY + 12, cardW, cardH, 24);
   ctx.fill();
 
-  // Cream Card Fill
-  ctx.fillStyle = '#FFF9E8';
+  // Card Fill from Theme
+  ctx.fillStyle = colors.cardBg;
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 5;
   drawRoundedRect(ctx, cardX, cardY, cardW, cardH, 24);
@@ -316,26 +379,26 @@ function drawBuilderIdCard(
   drawRoundedRect(ctx, cardX + 30 + 5, headerY + 5, cardW - 60, 80, 14);
   ctx.fill();
 
-  ctx.fillStyle = '#FFD600';
+  ctx.fillStyle = colors.brandPillBg;
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 4;
   drawRoundedRect(ctx, cardX + 30, headerY, cardW - 60, 80, 14);
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.brandPillText;
   ctx.font = '800 52px "Bebas Neue", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('HACKER HOUSE GOA', w / 2 - 80, headerY + 42);
 
   // Hindi "गोवा" on header right
-  ctx.fillStyle = '#FF007A';
+  ctx.fillStyle = colors.primaryAccent;
   ctx.font = '700 34px "Yatra One", serif';
   ctx.fillText('गोवा', w / 2 + 220, headerY + 42);
 
   // Sub-header date line
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.cardText;
   ctx.font = '700 18px "Space Mono", monospace';
   ctx.textAlign = 'center';
   ctx.fillText('GOA, INDIA  •  28–31 OCT 2026  •  BUILDER PASSPORT', w / 2, headerY + 112);
@@ -351,7 +414,7 @@ function drawBuilderIdCard(
   drawRoundedRect(ctx, photoX + 8, photoY + 8, photoW, photoH, 16);
   ctx.fill();
 
-  // Polaroid White/Cream Frame
+  // Polaroid Frame
   ctx.fillStyle = '#FFFFFF';
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 4;
@@ -370,7 +433,7 @@ function drawBuilderIdCard(
   drawRoundedRect(ctx, innerX, innerY, innerW, innerH, 8);
   ctx.clip();
 
-  ctx.fillStyle = '#FFF9E8';
+  ctx.fillStyle = colors.cardBg;
   ctx.fillRect(innerX, innerY, innerW, innerH);
 
   if (croppedImageElement) {
@@ -402,7 +465,7 @@ function drawBuilderIdCard(
     ctx.drawImage(imageElement, -renderW / 2, -renderH / 2, renderW, renderH);
     ctx.restore();
   } else {
-    ctx.fillStyle = '#111111';
+    ctx.fillStyle = colors.cardText;
     ctx.font = '700 24px "Space Mono", monospace';
     ctx.textAlign = 'center';
     ctx.fillText('PHOTO HERE', innerX + innerW / 2, innerY + innerH / 2);
@@ -428,13 +491,13 @@ function drawBuilderIdCard(
   const infoW = cardW - (photoW + 110); // ~370px
 
   // NAME
-  ctx.fillStyle = '#FF007A';
+  ctx.fillStyle = colors.primaryAccent;
   ctx.font = '700 15px "Space Mono", monospace';
   ctx.textAlign = 'left';
   ctx.fillText('BUILDER NAME:', infoX, infoY + 18);
 
   const nameText = (builderData.name || 'ANONYMOUS BUILDER').toUpperCase();
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.cardText;
   ctx.font = nameText.length > 15 
     ? '800 38px "Bebas Neue", sans-serif' 
     : '800 48px "Bebas Neue", sans-serif';
@@ -442,12 +505,12 @@ function drawBuilderIdCard(
 
   // CITY / LOCATION BADGE
   const cityText = (builderData.city || 'BENGALURU, INDIA').toUpperCase();
-  ctx.fillStyle = '#006B3C';
+  ctx.fillStyle = colors.tagColor;
   ctx.font = '700 15px "Space Mono", monospace';
   ctx.fillText(`📍 ${cityText}`, infoX, infoY + 92);
 
   // ROLE / STACK BADGE
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.cardText;
   ctx.font = '700 15px "Space Mono", monospace';
   ctx.fillText('STACK / ROLE:', infoX, infoY + 128);
 
@@ -457,31 +520,31 @@ function drawBuilderIdCard(
   drawRoundedRect(ctx, infoX + 4, infoY + 138 + 4, infoW - 10, 46, 8);
   ctx.fill();
 
-  ctx.fillStyle = '#FFD600';
+  ctx.fillStyle = colors.secondaryAccent;
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 3;
   drawRoundedRect(ctx, infoX, infoY + 138, infoW - 10, 46, 8);
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.cardText === '#FFFFFF' ? '#121214' : '#111111';
   ctx.font = '800 22px "Bebas Neue", sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(roleText, infoX + (infoW - 10) / 2, infoY + 167);
 
   // BUILDER TITLE
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#FF007A';
+  ctx.fillStyle = colors.primaryAccent;
   ctx.font = '700 15px "Space Mono", monospace';
   ctx.fillText('BUILDER TITLE:', infoX, infoY + 218);
 
-  // Title Box (Pink Accent)
+  // Title Box (Primary Accent)
   const titleText = (builderData.builderTitle || 'THE SYSTEM BUILDER').toUpperCase();
   ctx.fillStyle = '#111111';
   drawRoundedRect(ctx, infoX + 4, infoY + 228 + 4, infoW - 10, 60, 8);
   ctx.fill();
 
-  ctx.fillStyle = '#FF007A';
+  ctx.fillStyle = colors.primaryAccent;
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 3;
   drawRoundedRect(ctx, infoX, infoY + 228, infoW - 10, 60, 8);
@@ -501,7 +564,7 @@ function drawBuilderIdCard(
   const lowerX = cardX + 50;
 
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.cardText;
   ctx.font = '700 20px "Space Mono", monospace';
   ctx.fillText('⚡ WHAT ARE YOU BUILDING IN GOA?', lowerX, lowerY + 24);
 
@@ -534,7 +597,7 @@ function drawBuilderIdCard(
   ctx.translate(lowerX + 80, footerY + 50);
   ctx.rotate((-8 * Math.PI) / 180);
 
-  ctx.fillStyle = '#FF007A';
+  ctx.fillStyle = colors.primaryAccent;
   ctx.beginPath();
   ctx.arc(0, 0, 55, 0, Math.PI * 2);
   ctx.fill();
@@ -554,11 +617,11 @@ function drawBuilderIdCard(
 
   // Middle Text: Event Dates & Location
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = colors.cardText;
   ctx.font = '800 36px "Bebas Neue", sans-serif';
   ctx.fillText('OCTOBER 28–31, 2026', w / 2 + 30, footerY + 35);
 
-  ctx.fillStyle = '#006B3C';
+  ctx.fillStyle = colors.tagColor;
   ctx.font = '700 24px "Space Mono", monospace';
   ctx.fillText('GOA, INDIA • #FrameInGoa', w / 2 + 30, footerY + 70);
 
