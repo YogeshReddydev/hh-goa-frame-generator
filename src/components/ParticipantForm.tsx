@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BuilderData, ThemeStyle } from '../types';
-import { ROLES_AND_STACKS, generateTitleForRole, getRandomBuilderTitle, SAMPLE_INDIAN_PARTICIPANTS } from '../data/builderTitles';
+import { ROLES_AND_STACKS, INDIAN_CITIES, generateTitleForRole, getRandomBuilderTitle, SAMPLE_INDIAN_PARTICIPANTS } from '../data/builderTitles';
 import { RefreshCw, Sparkles, Palette, Check } from 'lucide-react';
 
 interface ParticipantFormProps {
@@ -45,6 +45,27 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
   onContinue,
   onLoadDemoSample,
 }) => {
+  // Determine if current role/city match predefined lists (excluding 'Other')
+  const isPresetRole = ROLES_AND_STACKS.filter((r) => r !== 'Other').includes(builderData.role);
+  const isPresetCity = INDIAN_CITIES.filter((c) => c !== 'Other').includes(builderData.city);
+
+  // States to track if 'Other' mode was manually chosen
+  const [isOtherRoleSelected, setIsOtherRoleSelected] = useState(!isPresetRole && builderData.role !== '');
+  const [isOtherCitySelected, setIsOtherCitySelected] = useState(!isPresetCity && builderData.city !== '');
+
+  // Keep 'Other' mode flags in sync when builderData is updated externally (e.g. sample presets)
+  useEffect(() => {
+    if (isPresetRole) {
+      setIsOtherRoleSelected(false);
+    }
+  }, [builderData.role, isPresetRole]);
+
+  useEffect(() => {
+    if (isPresetCity) {
+      setIsOtherCitySelected(false);
+    }
+  }, [builderData.city, isPresetCity]);
+
   const handleRoleChange = (newRole: string) => {
     const autoTitle = generateTitleForRole(newRole);
     onDataChange({
@@ -52,6 +73,30 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
       role: newRole,
       builderTitle: autoTitle,
     });
+  };
+
+  const handleRoleSelect = (selectedVal: string) => {
+    if (selectedVal === 'Other') {
+      setIsOtherRoleSelected(true);
+      if (isPresetRole) {
+        handleRoleChange('');
+      }
+    } else {
+      setIsOtherRoleSelected(false);
+      handleRoleChange(selectedVal);
+    }
+  };
+
+  const handleCitySelect = (selectedVal: string) => {
+    if (selectedVal === 'Other') {
+      setIsOtherCitySelected(true);
+      if (isPresetCity) {
+        onDataChange({ ...builderData, city: '' });
+      }
+    } else {
+      setIsOtherCitySelected(false);
+      onDataChange({ ...builderData, city: selectedVal });
+    }
   };
 
   const handleShuffleTitle = () => {
@@ -63,6 +108,8 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
   };
 
   const handleSelectSample = (sample: typeof SAMPLE_INDIAN_PARTICIPANTS[0]) => {
+    setIsOtherRoleSelected(false);
+    setIsOtherCitySelected(false);
     onDataChange({
       ...builderData,
       name: sample.name,
@@ -74,6 +121,10 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
   };
 
   const isFormValid = builderData.name.trim().length > 0 && builderData.role.trim().length > 0;
+
+  // Selected dropdown values
+  const roleSelectValue = isOtherRoleSelected ? 'Other' : (isPresetRole ? builderData.role : (builderData.role ? 'Other' : ''));
+  const citySelectValue = isOtherCitySelected ? 'Other' : (isPresetCity ? builderData.city : (builderData.city ? 'Other' : ''));
 
   return (
     <div className="w-full max-w-xl mx-auto px-4 py-6">
@@ -100,7 +151,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
           {onLoadDemoSample && (
             <button
               onClick={onLoadDemoSample}
-              className="bg-[#FF007A] hover:bg-[#e0006c] text-white font-mono-custom text-[11px] font-bold px-2.5 py-1 rounded border border-black shadow-[2px_2px_0px_#111111] transition-transform active:scale-95"
+              className="bg-[#FF007A] hover:bg-[#e0006c] text-white font-mono-custom text-[11px] font-bold px-2.5 py-1 rounded border border-black shadow-[2px_2px_0px_#111111] transition-transform active:scale-95 cursor-pointer"
             >
               ★ FULL DEMO MODE ★
             </button>
@@ -111,7 +162,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
             <button
               key={idx}
               onClick={() => handleSelectSample(sample)}
-              className="bg-[#FFF9E8] hover:bg-[#FFD600] text-[#111111] font-mono-custom text-[11px] font-bold px-2.5 py-1 rounded border border-black transition-colors"
+              className="bg-[#FFF9E8] hover:bg-[#FFD600] text-[#111111] font-mono-custom text-[11px] font-bold px-2.5 py-1 rounded border border-black transition-colors cursor-pointer"
             >
               + {sample.name} ({sample.city.split(',')[0]})
             </button>
@@ -142,9 +193,9 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
           </label>
           <div className="relative">
             <select
-              value={builderData.role}
-              onChange={(e) => handleRoleChange(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-white border-2 border-black rounded-xl font-sans text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#FF007A] shadow-[2px_2px_0px_#111111] appearance-none"
+              value={roleSelectValue}
+              onChange={(e) => handleRoleSelect(e.target.value)}
+              className="w-full px-3.5 py-2.5 bg-white border-2 border-black rounded-xl font-sans text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#FF007A] shadow-[2px_2px_0px_#111111] appearance-none cursor-pointer pr-10"
             >
               <option value="">Select your stack / role...</option>
               {ROLES_AND_STACKS.map((r, i) => (
@@ -153,32 +204,68 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
                 </option>
               ))}
             </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none font-bold text-xs">
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none font-bold text-xs text-[#111111]">
               ▼
             </div>
           </div>
-          {/* Custom role fallback input if user types custom */}
-          <input
-            type="text"
-            value={builderData.role}
-            onChange={(e) => handleRoleChange(e.target.value)}
-            placeholder="or type custom role (e.g. Full Stack Developer)..."
-            className="w-full mt-2 px-3.5 py-2 bg-white/80 border border-black/40 rounded-lg font-mono-custom text-xs text-[#111111]"
-          />
+
+          {/* Conditional Custom Role Input: Appears ONLY when 'Other' is selected */}
+          {isOtherRoleSelected && (
+            <div className="mt-2.5">
+              <label className="block font-mono-custom text-[11px] font-bold text-[#006B3C] mb-1">
+                ENTER YOUR ROLE / TECH STACK
+              </label>
+              <input
+                type="text"
+                autoFocus
+                value={builderData.role}
+                onChange={(e) => handleRoleChange(e.target.value)}
+                placeholder="e.g. Full Stack Developer, Rust Engineer..."
+                className="w-full px-3.5 py-2 bg-white border-2 border-black rounded-xl font-mono-custom text-xs text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#FF007A] shadow-[2px_2px_0px_#111111]"
+              />
+            </div>
+          )}
         </div>
 
-        {/* City / Location */}
+        {/* City / Location Dropdown */}
         <div>
           <label className="block font-mono-custom text-xs font-bold text-[#111111] mb-1">
-            CITY / LOCATION <span className="text-[#FF007A]">*</span>
+            LOCATION / CITY <span className="text-[#FF007A]">*</span>
           </label>
-          <input
-            type="text"
-            value={builderData.city}
-            onChange={(e) => onDataChange({ ...builderData, city: e.target.value })}
-            placeholder="e.g. Bengaluru, India"
-            className="w-full px-3.5 py-2.5 bg-white border-2 border-black rounded-xl font-sans text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#FF007A] shadow-[2px_2px_0px_#111111]"
-          />
+          <div className="relative">
+            <select
+              value={citySelectValue}
+              onChange={(e) => handleCitySelect(e.target.value)}
+              className="w-full px-3.5 py-2.5 bg-white border-2 border-black rounded-xl font-sans text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#FF007A] shadow-[2px_2px_0px_#111111] appearance-none cursor-pointer pr-10"
+            >
+              <option value="">Select your location...</option>
+              {INDIAN_CITIES.map((c, i) => (
+                <option key={i} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none font-bold text-xs text-[#111111]">
+              ▼
+            </div>
+          </div>
+
+          {/* Conditional Custom Location Input: Appears ONLY when 'Other' is selected */}
+          {isOtherCitySelected && (
+            <div className="mt-2.5">
+              <label className="block font-mono-custom text-[11px] font-bold text-[#006B3C] mb-1">
+                ENTER YOUR LOCATION
+              </label>
+              <input
+                type="text"
+                autoFocus
+                value={builderData.city}
+                onChange={(e) => onDataChange({ ...builderData, city: e.target.value })}
+                placeholder="e.g. Indore, India or SF, USA..."
+                className="w-full px-3.5 py-2 bg-white border-2 border-black rounded-xl font-mono-custom text-xs text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#FF007A] shadow-[2px_2px_0px_#111111]"
+              />
+            </div>
+          )}
         </div>
 
         {/* Builder Title (Auto-suggested with Shuffle) */}
@@ -189,7 +276,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
             </span>
             <button
               onClick={handleShuffleTitle}
-              className="flex items-center gap-1 font-mono-custom text-[11px] font-bold text-white bg-[#FF007A] hover:bg-[#e0006c] px-2.5 py-1 rounded border border-black transition-all active:scale-95"
+              className="flex items-center gap-1 font-mono-custom text-[11px] font-bold text-white bg-[#FF007A] hover:bg-[#e0006c] px-2.5 py-1 rounded border border-black transition-all active:scale-95 cursor-pointer"
             >
               <RefreshCw className="w-3 h-3" /> CHANGE TITLE
             </button>
@@ -272,7 +359,7 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
       <div className="w-full flex items-center justify-between gap-4">
         <button
           onClick={onBack}
-          className="flex-1 py-3 px-4 bg-[#FFF9E8] hover:bg-gray-100 text-[#111111] font-mono-custom text-xs font-bold border-2 border-black rounded-xl shadow-[3px_3px_0px_#111111] active:translate-y-0.5 transition-all"
+          className="flex-1 py-3 px-4 bg-[#FFF9E8] hover:bg-gray-100 text-[#111111] font-mono-custom text-xs font-bold border-2 border-black rounded-xl shadow-[3px_3px_0px_#111111] active:translate-y-0.5 transition-all cursor-pointer"
         >
           ← BACK
         </button>
@@ -292,3 +379,4 @@ export const ParticipantForm: React.FC<ParticipantFormProps> = ({
     </div>
   );
 };
+

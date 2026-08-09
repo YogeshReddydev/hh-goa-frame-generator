@@ -11,6 +11,26 @@ export const ROLES_AND_STACKS = [
   'Mobile App Development',
   'Robotics & Embedded Systems',
   'Smart Contracts / Web3',
+  'Other',
+];
+
+export const INDIAN_CITIES = [
+  'Bengaluru, India',
+  'Hyderabad, India',
+  'Chennai, India',
+  'Mumbai, India',
+  'Pune, India',
+  'New Delhi, India',
+  'Kolkata, India',
+  'Kochi, India',
+  'Ahmedabad, India',
+  'Jaipur, India',
+  'Chandigarh, India',
+  'Bhubaneswar, India',
+  'Visakhapatnam, India',
+  'Vijayawada, India',
+  'Goa, India',
+  'Other',
 ];
 
 export const BUILDER_TITLES = [
@@ -120,7 +140,7 @@ export const SAMPLE_INDIAN_PARTICIPANTS: SampleParticipant[] = [
   {
     name: 'Kabir Verma',
     role: 'Cloud Engineering',
-    city: 'Delhi, India',
+    city: 'New Delhi, India',
     builderTitle: 'THE CLOUD CAPTAIN',
     buildingText: 'Architecting multi-region serverless infrastructure for hackathon projects.',
   },

@@ -354,9 +354,9 @@ function drawBuilderIdCard(
   // 2. MAIN POSTER CARD CONTAINER
   const cardMargin = 45;
   const cardX = cardMargin;
-  const cardY = cardMargin + 10;
+  const cardY = cardMargin + 5;
   const cardW = w - cardMargin * 2; // 990px
-  const cardH = h - cardMargin * 2 - 20; // 1240px
+  const cardH = h - cardMargin * 2 - 10; // 1250px
 
   // Shadow
   ctx.fillStyle = '#111111';
@@ -372,9 +372,9 @@ function drawBuilderIdCard(
   ctx.stroke();
 
   // CARD HEADER BANNER
-  const headerY = cardY + 24;
+  const headerY = cardY + 20;
 
-  // Top Label: "HACKER HOUSE GOA 2026"
+  // Top Label: "HACKER HOUSE GOA"
   ctx.fillStyle = '#111111';
   drawRoundedRect(ctx, cardX + 30 + 5, headerY + 5, cardW - 60, 80, 14);
   ctx.fill();
@@ -399,14 +399,14 @@ function drawBuilderIdCard(
 
   // Sub-header date line
   ctx.fillStyle = colors.cardText;
-  ctx.font = '700 18px "Space Mono", monospace';
+  ctx.font = '700 17px "Space Mono", monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('GOA, INDIA  •  28–31 OCT 2026  •  BUILDER PASSPORT', w / 2, headerY + 112);
+  ctx.fillText('GOA, INDIA  •  28–31 OCT 2026  •  OFFICIAL BUILDER PASSPORT', w / 2, headerY + 110);
 
-  // 3. PHOTO AREA (Framed Polaroid Style)
+  // 3. PHOTO AREA (Framed Hero Polaroid)
   const photoW = 420;
-  const photoH = 460;
-  const photoX = cardX + 50;
+  const photoH = 470;
+  const photoX = cardX + 40;
   const photoY = cardY + 155;
 
   // Polaroid Frame Shadow
@@ -483,101 +483,116 @@ function drawBuilderIdCard(
   ctx.fillStyle = '#111111';
   ctx.font = '700 16px "Space Mono", monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('VERIFIED BUILDER', photoX + photoW / 2, photoY + photoH - 18);
+  ctx.fillText('VERIFIED BUILDER • HH GOA \'26', photoX + photoW / 2, photoY + photoH - 18);
 
-  // 4. RIGHT SIDE BUILDER INFO BLOCK
-  const infoX = photoX + photoW + 40; // cardX + 510
+  // 4. RIGHT SIDE BUILDER INFO BLOCK (Hero Typography Hierarchy)
+  const infoX = photoX + photoW + 35; // cardX + 495
   const infoY = photoY + 5;
-  const infoW = cardW - (photoW + 110); // ~370px
+  const infoW = cardW - (photoW + 90); // ~430px
 
-  // NAME
+  // NAME (Top Priority)
   ctx.fillStyle = colors.primaryAccent;
-  ctx.font = '700 15px "Space Mono", monospace';
+  ctx.font = '700 14px "Space Mono", monospace';
   ctx.textAlign = 'left';
   ctx.fillText('BUILDER NAME:', infoX, infoY + 18);
 
   const nameText = (builderData.name || 'ANONYMOUS BUILDER').toUpperCase();
   ctx.fillStyle = colors.cardText;
   ctx.font = nameText.length > 15 
-    ? '800 38px "Bebas Neue", sans-serif' 
-    : '800 48px "Bebas Neue", sans-serif';
-  ctx.fillText(nameText, infoX, infoY + 58);
+    ? '800 42px "Bebas Neue", sans-serif' 
+    : '800 52px "Bebas Neue", sans-serif';
+  ctx.fillText(nameText, infoX, infoY + 60);
 
-  // CITY / LOCATION BADGE
-  const cityText = (builderData.city || 'BENGALURU, INDIA').toUpperCase();
-  ctx.fillStyle = colors.tagColor;
-  ctx.font = '700 15px "Space Mono", monospace';
-  ctx.fillText(`📍 ${cityText}`, infoX, infoY + 92);
-
-  // ROLE / STACK BADGE
-  ctx.fillStyle = colors.cardText;
-  ctx.font = '700 15px "Space Mono", monospace';
-  ctx.fillText('STACK / ROLE:', infoX, infoY + 128);
-
-  // Role Pill Box
-  const roleText = (builderData.role || 'FULL-STACK BUILDER').toUpperCase();
-  ctx.fillStyle = '#111111';
-  drawRoundedRect(ctx, infoX + 4, infoY + 138 + 4, infoW - 10, 46, 8);
-  ctx.fill();
-
-  ctx.fillStyle = colors.secondaryAccent;
-  ctx.strokeStyle = '#111111';
-  ctx.lineWidth = 3;
-  drawRoundedRect(ctx, infoX, infoY + 138, infoW - 10, 46, 8);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = colors.cardText === '#FFFFFF' ? '#121214' : '#111111';
-  ctx.font = '800 22px "Bebas Neue", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(roleText, infoX + (infoW - 10) / 2, infoY + 167);
-
-  // BUILDER TITLE
-  ctx.textAlign = 'left';
+  // BUILDER TITLE (Key Identity Badge)
   ctx.fillStyle = colors.primaryAccent;
-  ctx.font = '700 15px "Space Mono", monospace';
-  ctx.fillText('BUILDER TITLE:', infoX, infoY + 218);
+  ctx.font = '700 14px "Space Mono", monospace';
+  ctx.fillText('BUILDER TITLE:', infoX, infoY + 98);
 
-  // Title Box (Primary Accent)
   const titleText = (builderData.builderTitle || 'THE SYSTEM BUILDER').toUpperCase();
   ctx.fillStyle = '#111111';
-  drawRoundedRect(ctx, infoX + 4, infoY + 228 + 4, infoW - 10, 60, 8);
+  drawRoundedRect(ctx, infoX + 4, infoY + 108 + 4, infoW - 10, 60, 10);
   ctx.fill();
 
   ctx.fillStyle = colors.primaryAccent;
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 3;
-  drawRoundedRect(ctx, infoX, infoY + 228, infoW - 10, 60, 8);
+  drawRoundedRect(ctx, infoX, infoY + 108, infoW - 10, 60, 10);
   ctx.fill();
   ctx.stroke();
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = titleText.length > 20 
-    ? '800 20px "Bebas Neue", sans-serif'
-    : '800 26px "Bebas Neue", sans-serif';
+    ? '800 22px "Bebas Neue", sans-serif'
+    : '800 28px "Bebas Neue", sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(titleText, infoX + (infoW - 10) / 2, infoY + 265);
+  ctx.fillText(titleText, infoX + (infoW - 10) / 2, infoY + 145);
 
-  // 5. LOWER SECTION: "WHAT ARE YOU BUILDING?" BANNER
-  const lowerY = photoY + photoH + 30; // cardY + 645
-  const lowerW = cardW - 100;
-  const lowerX = cardX + 50;
+  // ROLE / STACK BADGE
+  ctx.textAlign = 'left';
+  ctx.fillStyle = colors.cardText;
+  ctx.font = '700 14px "Space Mono", monospace';
+  ctx.fillText('ROLE / TECH STACK:', infoX, infoY + 198);
+
+  const roleText = (builderData.role || 'FULL-STACK BUILDER').toUpperCase();
+  ctx.fillStyle = '#111111';
+  drawRoundedRect(ctx, infoX + 4, infoY + 208 + 4, infoW - 10, 52, 10);
+  ctx.fill();
+
+  ctx.fillStyle = colors.secondaryAccent;
+  ctx.strokeStyle = '#111111';
+  ctx.lineWidth = 3;
+  drawRoundedRect(ctx, infoX, infoY + 208, infoW - 10, 52, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = colors.cardText === '#FFFFFF' ? '#121214' : '#111111';
+  ctx.font = '800 24px "Bebas Neue", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(roleText, infoX + (infoW - 10) / 2, infoY + 242);
+
+  // LOCATION / CITY
+  ctx.textAlign = 'left';
+  ctx.fillStyle = colors.tagColor;
+  ctx.font = '700 14px "Space Mono", monospace';
+  ctx.fillText('LOCATION / ORIGIN:', infoX, infoY + 292);
+
+  const cityText = (builderData.city || 'BENGALURU, INDIA').toUpperCase();
+  ctx.fillStyle = '#111111';
+  drawRoundedRect(ctx, infoX + 3, infoY + 302 + 3, infoW - 10, 48, 8);
+  ctx.fill();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.strokeStyle = '#111111';
+  ctx.lineWidth = 3;
+  drawRoundedRect(ctx, infoX, infoY + 302, infoW - 10, 48, 8);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = colors.primaryAccent;
+  ctx.font = '700 18px "Space Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(`📍 ${cityText}`, infoX + (infoW - 10) / 2, infoY + 332);
+
+  // 5. MIDDLE SECTION: "WHAT ARE YOU BUILDING IN GOA?" BANNER
+  const lowerY = photoY + photoH + 25; // cardY + 650
+  const lowerW = cardW - 80;
+  const lowerX = cardX + 40;
 
   ctx.textAlign = 'left';
   ctx.fillStyle = colors.cardText;
-  ctx.font = '700 20px "Space Mono", monospace';
-  ctx.fillText('⚡ WHAT ARE YOU BUILDING IN GOA?', lowerX, lowerY + 24);
+  ctx.font = '700 18px "Space Mono", monospace';
+  ctx.fillText('⚡ WHAT ARE YOU BUILDING IN GOA?', lowerX, lowerY + 22);
 
   // Building Quote Container Box
-  const quoteBoxH = 150;
+  const quoteBoxH = 180;
   ctx.fillStyle = '#111111';
-  drawRoundedRect(ctx, lowerX + 6, lowerY + 40 + 6, lowerW, quoteBoxH, 16);
+  drawRoundedRect(ctx, lowerX + 6, lowerY + 35 + 6, lowerW, quoteBoxH, 16);
   ctx.fill();
 
   ctx.fillStyle = '#FFFFFF';
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 4;
-  drawRoundedRect(ctx, lowerX, lowerY + 40, lowerW, quoteBoxH, 16);
+  drawRoundedRect(ctx, lowerX, lowerY + 35, lowerW, quoteBoxH, 16);
   ctx.fill();
   ctx.stroke();
 
@@ -587,49 +602,69 @@ function drawBuilderIdCard(
   ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
   
   // Wrap text inside quote box
-  wrapText(ctx, `"${buildDesc}"`, lowerX + 30, lowerY + 80, lowerW - 60, 32);
+  wrapText(ctx, `"${buildDesc}"`, lowerX + 30, lowerY + 78, lowerW - 60, 34);
 
-  // 6. CARD FOOTER & STAMPS / HASHTAG
-  const footerY = lowerY + quoteBoxH + 70;
+  // 6. GROUNDED TROPICAL FOOTER PANEL (Fills bottom, eliminates empty white space)
+  const footerPanelY = lowerY + quoteBoxH + 55; // cardY + 910
+  const footerPanelH = 260;
+  const footerPanelW = cardW - 80;
+  const footerPanelX = cardX + 40;
+
+  // Footer Panel Shadow
+  ctx.fillStyle = '#111111';
+  drawRoundedRect(ctx, footerPanelX + 6, footerPanelY + 6, footerPanelW, footerPanelH, 18);
+  ctx.fill();
+
+  // Footer Panel Main Fill (Dark Tropical Accent or Primary Theme Background)
+  ctx.fillStyle = colors.bgOuter;
+  ctx.strokeStyle = '#111111';
+  ctx.lineWidth = 4;
+  drawRoundedRect(ctx, footerPanelX, footerPanelY, footerPanelW, footerPanelH, 18);
+  ctx.fill();
+  ctx.stroke();
 
   // Left Stamp: Official HH Goa Seal
   ctx.save();
-  ctx.translate(lowerX + 80, footerY + 50);
+  ctx.translate(footerPanelX + 110, footerPanelY + 130);
   ctx.rotate((-8 * Math.PI) / 180);
 
   ctx.fillStyle = colors.primaryAccent;
   ctx.beginPath();
-  ctx.arc(0, 0, 55, 0, Math.PI * 2);
+  ctx.arc(0, 0, 65, 0, Math.PI * 2);
   ctx.fill();
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 4;
   ctx.stroke();
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = '800 18px "Bebas Neue", sans-serif';
+  ctx.font = '800 20px "Bebas Neue", sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('HACKER HOUSE', 0, -12);
-  ctx.font = '800 24px "Bebas Neue", sans-serif';
-  ctx.fillText('GOA 2026', 0, 12);
-  ctx.font = '700 12px "Space Mono", monospace';
-  ctx.fillText('PASSPORT', 0, 30);
+  ctx.fillText('HACKER HOUSE', 0, -14);
+  ctx.font = '800 28px "Bebas Neue", sans-serif';
+  ctx.fillText('GOA 2026', 0, 14);
+  ctx.font = '700 13px "Space Mono", monospace';
+  ctx.fillText('OFFICIAL PASSPORT', 0, 34);
   ctx.restore();
 
-  // Middle Text: Event Dates & Location
+  // Middle Text: Event Dates & Location inside panel
   ctx.textAlign = 'center';
-  ctx.fillStyle = colors.cardText;
-  ctx.font = '800 36px "Bebas Neue", sans-serif';
-  ctx.fillText('OCTOBER 28–31, 2026', w / 2 + 30, footerY + 35);
+  ctx.fillStyle = colors.secondaryAccent;
+  ctx.font = '800 48px "Bebas Neue", sans-serif';
+  ctx.fillText('OCTOBER 28–31, 2026', w / 2 + 30, footerPanelY + 85);
 
-  ctx.fillStyle = colors.tagColor;
-  ctx.font = '700 24px "Space Mono", monospace';
-  ctx.fillText('GOA, INDIA • #FrameInGoa', w / 2 + 30, footerY + 70);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '700 22px "Space Mono", monospace';
+  ctx.fillText('GOA, INDIA  •  #FrameInGoa', w / 2 + 30, footerPanelY + 130);
 
-  // Right Side Decorative Tropical Illustration
-  drawPalmFrondVector(ctx, w - 200, footerY - 20, 0.85, true);
-  drawSunVector(ctx, w - 120, footerY + 20, 0.6);
-  drawWaveVector(ctx, lowerX, footerY + 120, '#FFD600');
-  drawWaveVector(ctx, w - 240, footerY + 120, '#FF007A');
+  ctx.fillStyle = colors.secondaryAccent;
+  ctx.font = '700 15px "Space Mono", monospace';
+  ctx.fillText('BUILDER PASSPORT NO. HHG-2026-8842', w / 2 + 30, footerPanelY + 175);
+
+  // Right Side Decorative Tropical Illustration inside panel
+  drawPalmFrondVector(ctx, w - 180, footerPanelY + 40, 0.9, true);
+  drawSunVector(ctx, w - 130, footerPanelY + 160, 0.65);
+  drawWaveVector(ctx, footerPanelX + 220, footerPanelY + 215, colors.secondaryAccent);
+  drawWaveVector(ctx, w - 320, footerPanelY + 215, colors.primaryAccent);
 }
 
 /**

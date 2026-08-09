@@ -288,6 +288,7 @@ export default function App() {
             }}
             onCreateAnother={handleReset}
             builderName={builderData.name}
+            builderData={builderData}
             isPfp={selectedFormat === 'PFP'}
           />
         )}
